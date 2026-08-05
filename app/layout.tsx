@@ -15,6 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Hotel Management | Smart Check-In",
   description: "Digital Check-in, Billing & Hotel Management System",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
