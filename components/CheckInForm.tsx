@@ -11,6 +11,7 @@ interface PrimaryGuest {
   checkInDate: string;
   checkOutDate: string;
   agreedPrice: string;
+  roomNumber: string;
   paymentType: 'cash' | 'credit';
   maleGuests: string;
   femaleGuests: string;
@@ -24,6 +25,7 @@ export default function CheckInForm() {
     checkInDate: '',
     checkOutDate: '',
     agreedPrice: '',
+    roomNumber: '',
     paymentType: 'cash',
     maleGuests: '1',
     femaleGuests: '0',
@@ -91,6 +93,7 @@ export default function CheckInForm() {
           check_in_date: primaryGuest.checkInDate,
           check_out_date: primaryGuest.checkOutDate,
           agreed_price: primaryGuest.agreedPrice ? parseFloat(primaryGuest.agreedPrice) : null,
+          room_number: primaryGuest.roomNumber,
           payment_type: primaryGuest.paymentType,
           male_guests: maleCount,
           female_guests: femaleCount,
@@ -131,7 +134,7 @@ export default function CheckInForm() {
 
   const handleReset = () => {
     setIsSubmitted(false);
-    setPrimaryGuest({ name: '', age: '', phone: '', checkInDate: '', checkOutDate: '', agreedPrice: '', paymentType: 'cash', maleGuests: '1', femaleGuests: '0' });
+    setPrimaryGuest({ name: '', age: '', phone: '', checkInDate: '', checkOutDate: '', agreedPrice: '', roomNumber: '', paymentType: 'cash', maleGuests: '1', femaleGuests: '0' });
     setIdFiles([]);
   };
 
@@ -185,17 +188,31 @@ export default function CheckInForm() {
             </div>
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-600 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={primaryGuest.name}
-                  onChange={handlePrimaryChange}
-                  required
-                  placeholder="John Doe"
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors outline-none text-slate-700 bg-slate-50 focus:bg-white"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-600 mb-1">Full Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={primaryGuest.name}
+                    onChange={handlePrimaryChange}
+                    required
+                    placeholder="John Doe"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors outline-none text-slate-700 bg-slate-50 focus:bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-600 mb-1">Room Number</label>
+                  <input
+                    type="text"
+                    name="roomNumber"
+                    value={primaryGuest.roomNumber}
+                    onChange={handlePrimaryChange}
+                    required
+                    placeholder="e.g. 101"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors outline-none text-slate-700 bg-slate-50 focus:bg-white"
+                  />
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

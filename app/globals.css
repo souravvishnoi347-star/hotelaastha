@@ -16,6 +16,10 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  overscroll-behavior-y: none;
+}
+html {
+  overscroll-behavior-y: none;
 }
 
 /* Override Tailwind v4's default oklch border colors which crash html2canvas/html2pdf */
