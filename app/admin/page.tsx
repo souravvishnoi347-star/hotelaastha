@@ -409,7 +409,7 @@ function AdminDashboard() {
               <div className="bg-gradient-to-br from-amber-500 to-orange-500 rounded-3xl p-6 text-white shadow-lg shadow-amber-200 relative overflow-hidden">
                 <div className="relative z-10">
                   <p className="text-amber-100 text-sm font-medium uppercase tracking-wider mb-1">Total Guests</p>
-                  <h2 className="text-4xl font-black">{filteredData.reduce((acc, curr) => acc + curr.total_guests, 0)}</h2>
+                  <h2 className="text-4xl font-black">{filteredData.reduce((acc, curr) => acc + (curr.male_guests || 0) + (curr.female_guests || 0), 0)}</h2>
                 </div>
                 <svg className="absolute right-[-10%] top-[-10%] w-32 h-32 text-white opacity-10" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" /></svg>
               </div>
@@ -445,7 +445,7 @@ function AdminDashboard() {
                   <p className="text-2xl font-black text-gray-800">
                     {filteredData.filter(b => b.status === 'checked_in').reduce((total, b) => {
                       if (!b.room_number) return total + 1;
-                      const rooms = b.room_number.toString().trim().split(/[\\s,+-]+/).filter(Boolean);
+                      const rooms = b.room_number.toString().trim().split(/[\s,+-]+/).filter(Boolean);
                       return total + (rooms.length > 0 ? rooms.length : 1);
                     }, 0)}
                   </p>
