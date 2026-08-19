@@ -176,7 +176,7 @@ function AdminDashboard() {
       setData(merged);
     } catch (err: any) {
       console.error(err);
-      setError("Failed to fetch data. Ensure your session is valid and RLS allows SELECT.");
+      setError("Error: " + (err?.message || JSON.stringify(err) || "Unknown error"));
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
