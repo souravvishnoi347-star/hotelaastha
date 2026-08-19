@@ -442,7 +442,13 @@ function AdminDashboard() {
                 </div>
                 <div>
                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Rooms Booked</p>
-                  <p className="text-2xl font-black text-gray-800">{filteredData.filter(b => b.status === 'checked_in').length}</p>
+                  <p className="text-2xl font-black text-gray-800">
+                    {filteredData.filter(b => b.status === 'checked_in').reduce((total, b) => {
+                      if (!b.room_number) return total + 1;
+                      const rooms = b.room_number.toString().trim().split(/[\\s,+-]+/).filter(Boolean);
+                      return total + (rooms.length > 0 ? rooms.length : 1);
+                    }, 0)}
+                  </p>
                 </div>
               </div>
               <a href="/admin/expenses" className="group bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer flex items-center gap-4">
