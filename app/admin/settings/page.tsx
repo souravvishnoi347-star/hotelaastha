@@ -75,6 +75,54 @@ function AdminSettings() {
     );
   }
 
+  const handleExportData = async () => {
+    try {
+      const { data: bookings } = await supabase.from('Bookings').select('*');
+      const { data: expenses } = await supabase.from('Expenses').select('*');
+
+      const downloadCSV = (data: any[], filename: string) => {
+        if (!data || data.length === 0) return;
+        const keys = Object.keys(data[0]);
+        const csv = [
+          keys.join(","),
+          ...data.map(row => keys.map(k => `"${(row[k] || "").toString().replace(/"/g, '""')}"`).join(","))
+        ].join("\n");
+        const blob = new Blob([csv], { type: "text/csv" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+      };
+
+      if (bookings && bookings.length > 0) downloadCSV(bookings, `Bookings_${new Date().toISOString().split('T')[0]}.csv`);
+      setTimeout(() => {
+        if (expenses && expenses.length > 0) downloadCSV(expenses, `Expenses_${new Date().toISOString().split('T')[0]}.csv`);
+      }, 500);
+      
+      alert("Export started. Check your downloads folder.");
+    } catch (e: any) {
+      alert("Error exporting data: " + e.message);
+    }
+  };
+
+  const handleResetData = async () => {
+    const confirmText = prompt("WARNING: This will permanently delete ALL bookings, guests, and expenses.\\n\\nPlease type 'RESET' to confirm.");
+    if (confirmText === "RESET") {
+      try {
+        const { error: gErr } = await supabase.from("Guests").delete().neq("id", 0);
+        if (gErr) throw gErr;
+        const { error: bErr } = await supabase.from("Bookings").delete().neq("id", 0);
+        if (bErr) throw bErr;
+        const { error: eErr } = await supabase.from("Expenses").delete().neq("id", 0);
+        if (eErr) throw eErr;
+        
+        alert("All data has been successfully deleted. The software is now reset.");
+      } catch (err: any) {
+        alert("Failed to delete data. Check permissions: " + err.message);
+      }
+    }
+  };
+
   return (
     <div className="flex h-screen bg-gray-50 flex-col md:flex-row relative">
       <AdminSidebar activePath="/admin/settings" hotelName={settings.hotelName} />
@@ -139,7 +187,7 @@ function AdminSettings() {
                     placeholder="e.g. ABC Hospitality Pvt. Ltd."
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors outline-none text-gray-800"
                   />
-                  <p className="text-xs text-gray-400 mt-1">Shown on bills as &quot;Managed by ...&quot;</p>
+                  <p className="text-xs text-gray-400 mt-1">Shown on bills as "Managed by ..."</p>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-gray-700 mb-1">Reception Contact</label>
@@ -202,6 +250,36 @@ function AdminSettings() {
                     placeholder="e.g. 350"
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors outline-none text-gray-800"
                   />
+                </div>
+              </div>
+            </div>
+
+            {/* Data Management */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden p-8">
+              <h3 className="text-lg font-bold text-gray-800 mb-6 border-b pb-4 flex items-center gap-2">
+                <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Data Management (Reset Software)
+              </h3>
+              
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  You can download all your bookings and expenses as CSV files, or permanently delete all data to reset the software for a fresh start.
+                </p>
+                <div className="flex gap-4">
+                  <button
+                    onClick={handleExportData}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm"
+                  >
+                    Export Data (CSV)
+                  </button>
+                  <button
+                    onClick={handleResetData}
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-sm"
+                  >
+                    Delete All Data (Reset)
+                  </button>
                 </div>
               </div>
             </div>
