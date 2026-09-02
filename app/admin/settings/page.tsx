@@ -78,6 +78,7 @@ function AdminSettings() {
   const handleExportData = async () => {
     try {
       const { data: bookings } = await supabase.from('Bookings').select('*');
+      const { data: guests } = await supabase.from('Guests').select('*');
       const { data: expenses } = await supabase.from('Expenses').select('*');
 
       const downloadCSV = (data: any[], filename: string) => {
@@ -96,10 +97,13 @@ function AdminSettings() {
 
       if (bookings && bookings.length > 0) downloadCSV(bookings, `Bookings_${new Date().toISOString().split('T')[0]}.csv`);
       setTimeout(() => {
-        if (expenses && expenses.length > 0) downloadCSV(expenses, `Expenses_${new Date().toISOString().split('T')[0]}.csv`);
+        if (guests && guests.length > 0) downloadCSV(guests, `Guests_with_Names_and_IDs_${new Date().toISOString().split('T')[0]}.csv`);
       }, 500);
+      setTimeout(() => {
+        if (expenses && expenses.length > 0) downloadCSV(expenses, `Expenses_${new Date().toISOString().split('T')[0]}.csv`);
+      }, 1000);
       
-      alert("Export started. Check your downloads folder.");
+      alert("Export started. Check your downloads folder. You should receive Bookings, Guests, and Expenses files.");
     } catch (e: any) {
       alert("Error exporting data: " + e.message);
     }
